@@ -12,13 +12,14 @@ GROUP_ID = os.environ["LINE_GROUP_ID"]
 
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 
+# ページ取得
 res = requests.get(URL)
 soup = BeautifulSoup(res.text, "html.parser")
 
 items = []
 
-# ニュース一覧取得
-for dt in soup.select("dl dt"):
+# 最新10件取得
+for dt in soup.select("dl dt")[:10]:
 
     dd = dt.find_next_sibling("dd")
     a = dd.find("a")
@@ -29,13 +30,24 @@ for dt in soup.select("dl dt"):
 
     items.append((date, title, link))
 
-# 前回チェック
+# 前回記事読み込み
 try:
     with open("latest.txt") as f:
         old = f.read().strip()
 except:
     old = ""
 
+# 初回実行判定
+if old == "":
+    newest = f"{items[0][0]} {items[0][1]}"
+
+    with open("latest.txt", "w") as f:
+        f.write(newest)
+
+    print("初回実行：通知なし")
+    exit()
+
+# 新記事検出
 new_articles = []
 
 for date, title, link in items:
@@ -47,7 +59,10 @@ for date, title, link in items:
 
     new_articles.append((date, title, link))
 
-# 新着があれば通知
+# 最大5件に制限
+new_articles = new_articles[:5]
+
+# 通知
 if new_articles:
 
     message = "東大教養学部ニュース更新！\n\n"
@@ -60,6 +75,8 @@ if new_articles:
         GROUP_ID,
         TextSendMessage(text=message)
     )
+
+    print("通知送信")
 
     # 最新記事保存
     newest = f"{items[0][0]} {items[0][1]}"
