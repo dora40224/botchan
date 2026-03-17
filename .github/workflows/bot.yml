@@ -1,0 +1,27 @@
+name: news bot
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # 10分ごと
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: install libraries
+        run: pip install -r requirements.txt
+
+      - name: run bot
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
+        run: python news_bot.py
