@@ -5,7 +5,7 @@ from linebot import LineBotApi
 from linebot.models import TextSendMessage
 
 URL = "https://www.c.u-tokyo.ac.jp/zenki/news/kyoumu/index.html"
-BASE = "https://www.c.u-tokyo.ac.jp/zenki/news/"
+BASE = "https://www.c.u-tokyo.ac.jp/zenki/news/kyomu/"
 
 CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
 GROUP_ID = os.environ["LINE_GROUP_ID"]
@@ -27,7 +27,7 @@ for dt in soup.select("dl dt")[:10]:
 
     date = dt.text.strip()
     title = a.text.strip()
-    link = BASE + a["href"]
+    link = URL
 
     items.append((date, title, link))
 
@@ -66,11 +66,13 @@ new_articles = new_articles[:5]
 # 通知
 if new_articles:
 
-    message = "東大教養学部ニュース更新！\n\n"
+    message = "教務課からのお知らせが更新されました\n\n"
 
     for date, title, link in reversed(new_articles):
 
-        message += f"{date}\n{title}\n{link}\n\n"
+        message += f"{date}\n{title}\n\n"
+
+    message += f"{link}\n"
 
     line_bot_api.push_message(
         GROUP_ID,
