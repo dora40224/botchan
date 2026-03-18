@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
 
-URL = "https://www.c.u-tokyo.ac.jp/zenki/news/index.html"
+URL = "https://www.c.u-tokyo.ac.jp/zenki/news/kyoumu/index.html"
 BASE = "https://www.c.u-tokyo.ac.jp/zenki/news/"
 
 CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
