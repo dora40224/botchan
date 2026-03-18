@@ -14,6 +14,7 @@ line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 
 # ページ取得
 res = requests.get(URL)
+res.encoding = 'utf-8'
 soup = BeautifulSoup(res.text, "html.parser")
 
 items = []
